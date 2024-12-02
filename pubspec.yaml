@@ -78,7 +78,7 @@ flutter:
     - assets/sound/
     - assets/sound/TH/
     - assets/sound/EN/
-    # - assets/sound/LOAS/
+    - assets/sound/LOAS/
     - assets/sound/CN/
     # - assets/sound/KR/
     - assets/images/

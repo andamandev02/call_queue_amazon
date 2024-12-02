@@ -176,8 +176,8 @@ class _QueueScreenState extends State<QueueScreen> {
         // '${externalDir.parent.parent.parent.parent.parent.parent.path}/2627-6E53/images';
         // '/storage/1474-1882/logo';
         // '/storage/22A1-A3D7/logo';
-        // '/storage/0500-5AD3/logo';
-        '/mnt/usb/0500-5AD3/logo';
+        '/storage/3BCD-E5B2/logo';
+    // '/mnt/usb/0500-5AD3/logo';
     if (usbPath == null) {
       throw 'USB path is null';
     }
@@ -226,7 +226,9 @@ class _QueueScreenState extends State<QueueScreen> {
     if (externalDir == null) {
       throw 'External storage directory not found';
     }
-    String usbPath = '/mnt/usb/0500-5AD3/images';
+    // String usbPath = '/mnt/usb/0500-5AD3/images';
+    String usbPath = '/storage/3BCD-E5B2/images';
+
     if (usbPath.isEmpty) {
       throw 'USB path is null';
     }
@@ -342,13 +344,28 @@ class _QueueScreenState extends State<QueueScreen> {
   }
 
   void _playSound(String value) async {
-    try {
-      var box = await Hive.openBox('ModeSounds');
-      var values = box.values.toList();
-      var mode = box.values.first;
-      final trimmedString = value.toString();
-      final numberString = trimmedString.replaceAll(RegExp('^0+'), '');
+    Future.microtask(() async {
       try {
+        var box = await Hive.openBox('ModeSounds');
+        var values = box.values.toList();
+        var mode = box.values.first;
+        final trimmedString = value.toString();
+        final numberString = trimmedString.replaceAll(RegExp('^0+'), '');
+
+        _audioPlayer.setAudioContext(AudioContext(
+          android: const AudioContextAndroid(
+            isSpeakerphoneOn: false, // ไม่บังคับใช้ลำโพง
+            stayAwake: false, // ไม่ต้องให้แอปตื่นตลอดเวลา
+            contentType: AndroidContentType.music, // ประเภทเสียงเป็น music
+            usageType: AndroidUsageType.media, // ใช้ในสื่อ เช่น เพลงหรือวิดีโอ
+            audioFocus: AndroidAudioFocus.none, // ไม่แย่ง Audio Focus
+          ),
+          iOS: AudioContextIOS(
+            category: AVAudioSessionCategory.playback,
+            options: const {AVAudioSessionOptions.mixWithOthers}, // สำหรับ iOS
+          ),
+        ));
+
         _startBlinking();
 
         if (mode == '1') {
@@ -552,13 +569,13 @@ class _QueueScreenState extends State<QueueScreen> {
           }
         });
       } catch (e) {
-        print("Error playing sound: $e");
+        print("Error opening Hive box: $e");
         showDialog(
           context: context,
           builder: (BuildContext context) {
             return AlertDialog(
               title: Text('Error'),
-              content: Text('Error playing sound: $e'),
+              content: Text('Error opening Hive box: $e'),
               actions: [
                 TextButton(
                   onPressed: () {
@@ -574,27 +591,7 @@ class _QueueScreenState extends State<QueueScreen> {
         _timer?.cancel();
         _isFieldEnabled = true;
       }
-    } catch (e) {
-      print("Error opening Hive box: $e");
-      showDialog(
-        context: context,
-        builder: (BuildContext context) {
-          return AlertDialog(
-            title: Text('Error'),
-            content: Text('Error opening Hive box: $e'),
-            actions: [
-              TextButton(
-                onPressed: () {
-                  Navigator.of(context).pop();
-                },
-                child: Text('OK'),
-              ),
-            ],
-          );
-        },
-      );
-    }
-    _timer?.cancel();
+    });
   }
 
   void _handleMultiply() {
@@ -887,12 +884,13 @@ class _VideoPlayerWidgetState extends State<VideoPlayerWidget> {
     super.initState();
     _controller = VideoPlayerController.file(widget.file)
       ..setVolume(0.0)
+      ..setLooping(true)
       ..initialize().then((_) {
         setState(() {});
         _controller.play();
         _controller.addListener(() {
           if (_controller.value.position == _controller.value.duration) {
-            widget.onVideoFinished(true); // Notify that video is finished
+            widget.onVideoFinished(true);
           }
         });
       });
