@@ -75,12 +75,111 @@ flutter:
 
   # To add assets to your application, add an assets section, like this:
   assets:
+    - assets/sound/TH/TH- (0).mp3
+    - assets/sound/TH/TH- (1).mp3
+    - assets/sound/TH/TH- (2).mp3
+    - assets/sound/TH/TH- (3).mp3
+    - assets/sound/TH/TH- (4).mp3
+    - assets/sound/TH/TH- (5).mp3
+    - assets/sound/TH/TH- (6).mp3
+    - assets/sound/TH/TH- (7).mp3
+    - assets/sound/TH/TH- (8).mp3
+    - assets/sound/TH/TH- (9).mp3
+    - assets/sound/TH/TH- (10).mp3
+    - assets/sound/TH/TH- (11).mp3
+    - assets/sound/TH/TH- (12).mp3
+    - assets/sound/TH/TH- (13).mp3
+    - assets/sound/TH/TH- (14).mp3
+    - assets/sound/TH/TH- (15).mp3
+    - assets/sound/TH/TH- (16).mp3
+    - assets/sound/TH/TH- (17).mp3
+    - assets/sound/TH/TH- (18).mp3
+    - assets/sound/TH/TH- (19).mp3
+    - assets/sound/TH/TH- (20).mp3
+    - assets/sound/TH/TH- (21).mp3
+    - assets/sound/TH/TH- (22).mp3
+    - assets/sound/TH/TH- (23).mp3
+    - assets/sound/TH/TH- (24).mp3
+    - assets/sound/TH/TH- (25).mp3
+    - assets/sound/TH/TH- (26).mp3
+    - assets/sound/TH/TH- (27).mp3
+    - assets/sound/TH/TH- (28).mp3
+    - assets/sound/TH/TH- (29).mp3
+    - assets/sound/TH/TH- (30).mp3
+    - assets/sound/TH/TH- (31).mp3
+    - assets/sound/TH/TH- (32).mp3
+    - assets/sound/TH/TH- (33).mp3
+    - assets/sound/TH/TH- (34).mp3
+    - assets/sound/TH/TH- (35).mp3
+    - assets/sound/TH/TH- (36).mp3
+    - assets/sound/TH/TH- (37).mp3
+    - assets/sound/TH/TH- (38).mp3
+    - assets/sound/TH/TH- (39).mp3
+    - assets/sound/TH/TH- (40).mp3
+    - assets/sound/TH/TH- (41).mp3
+    - assets/sound/TH/TH- (42).mp3
+    - assets/sound/TH/TH- (43).mp3
+    - assets/sound/TH/TH- (44).mp3
+    - assets/sound/TH/TH- (45).mp3
+    - assets/sound/TH/TH- (46).mp3
+    - assets/sound/TH/TH- (47).mp3
+    - assets/sound/TH/TH- (48).mp3
+    - assets/sound/TH/TH- (49).mp3
+    - assets/sound/TH/TH- (50).mp3
+    - assets/sound/TH/TH- (51).mp3
+    - assets/sound/TH/TH- (52).mp3
+    - assets/sound/TH/TH- (53).mp3
+    - assets/sound/TH/TH- (54).mp3
+    - assets/sound/TH/TH- (55).mp3
+    - assets/sound/TH/TH- (56).mp3
+    - assets/sound/TH/TH- (57).mp3
+    - assets/sound/TH/TH- (58).mp3
+    - assets/sound/TH/TH- (59).mp3
+    - assets/sound/TH/TH- (60).mp3
+    - assets/sound/TH/TH- (61).mp3
+    - assets/sound/TH/TH- (62).mp3
+    - assets/sound/TH/TH- (63).mp3
+    - assets/sound/TH/TH- (64).mp3
+    - assets/sound/TH/TH- (65).mp3
+    - assets/sound/TH/TH- (66).mp3
+    - assets/sound/TH/TH- (67).mp3
+    - assets/sound/TH/TH- (68).mp3
+    - assets/sound/TH/TH- (69).mp3
+    - assets/sound/TH/TH- (70).mp3
+    - assets/sound/TH/TH- (71).mp3
+    - assets/sound/TH/TH- (72).mp3
+    - assets/sound/TH/TH- (73).mp3
+    - assets/sound/TH/TH- (74).mp3
+    - assets/sound/TH/TH- (75).mp3
+    - assets/sound/TH/TH- (76).mp3
+    - assets/sound/TH/TH- (77).mp3
+    - assets/sound/TH/TH- (78).mp3
+    - assets/sound/TH/TH- (79).mp3
+    - assets/sound/TH/TH- (80).mp3
+    - assets/sound/TH/TH- (81).mp3
+    - assets/sound/TH/TH- (82).mp3
+    - assets/sound/TH/TH- (83).mp3
+    - assets/sound/TH/TH- (84).mp3
+    - assets/sound/TH/TH- (85).mp3
+    - assets/sound/TH/TH- (86).mp3
+    - assets/sound/TH/TH- (87).mp3
+    - assets/sound/TH/TH- (88).mp3
+    - assets/sound/TH/TH- (89).mp3
+    - assets/sound/TH/TH- (90).mp3
+    - assets/sound/TH/TH- (91).mp3
+    - assets/sound/TH/TH- (92).mp3
+    - assets/sound/TH/TH- (93).mp3
+    - assets/sound/TH/TH- (94).mp3
+    - assets/sound/TH/TH- (95).mp3
+    - assets/sound/TH/TH- (96).mp3
+    - assets/sound/TH/TH- (97).mp3
+    - assets/sound/TH/TH- (98).mp3
+    - assets/sound/TH/TH- (99).mp3
+    - assets/sound/TH/
+    - assets/sound/CN/
     - assets/sound/
     - assets/sound/TH/
     - assets/sound/EN/
-    - assets/sound/LOAS/
-    - assets/sound/CN/
-    # - assets/sound/KR/
     - assets/images/
     - assets/images/logoapp.jpg
     - assets/images/Slide1.jpg

@@ -20,7 +20,7 @@ class _QueueScreenState extends State<QueueScreen> {
   final AudioPlayer _audioPlayer = AudioPlayer();
   final TextEditingController _textController = TextEditingController();
   final FocusNode _focusNode = FocusNode();
-  String _value = '000';
+  String _value = '00';
   String? _errorLoadingImage;
   bool _isPlaying = false;
   List<File> imageList = [];
@@ -81,7 +81,7 @@ class _QueueScreenState extends State<QueueScreen> {
     if (_isPlaying) {
       return;
     }
-    if (value == '.') {
+    if (value == '-') {
       setState(() {
         _isFieldEnabled = false;
       });
@@ -90,7 +90,7 @@ class _QueueScreenState extends State<QueueScreen> {
         _textController.clear();
       } else {
         int currentValue = int.parse(_value);
-        _value = (currentValue).toString().padLeft(3, '0');
+        _value = (currentValue).toString().padLeft(2, '0');
         _playSound(_value);
       }
     } else if (value == '+') {
@@ -101,12 +101,22 @@ class _QueueScreenState extends State<QueueScreen> {
     }
   }
 
+  // void _handlePlus() async {
+  //   int currentValue = int.parse(_value);
+  //   _value = (currentValue + 1).toString().padLeft(2, '0');
+  //   _playSound(_value);
+  //   _focusNode.requestFocus();
+  //   _textController.clear();
+  // }
+
   void _handlePlus() async {
     int currentValue = int.parse(_value);
-    _value = (currentValue + 1).toString().padLeft(3, '0');
-    _playSound(_value);
-    _focusNode.requestFocus();
-    _textController.clear();
+    currentValue = (currentValue + 1) > 99 ? 1 : currentValue + 1;
+    _value =
+        currentValue.toString().padLeft(2, '0'); // แปลงให้เป็นรูปแบบ 2 หลัก
+    _playSound(_value); // เล่นเสียงตามค่าใหม่
+    _focusNode.requestFocus(); // โฟกัสกลับ
+    _textController.clear(); // ล้างค่าของ TextField
   }
 
   @override
@@ -311,9 +321,9 @@ class _QueueScreenState extends State<QueueScreen> {
   }
 
   void _handleNumericValue(String value) async {
-    _value = value.toString().padLeft(3, '0');
+    _value = value.toString().padLeft(2, '0');
     if (_value.length > 3) {
-      _value = _value.substring(0, 3);
+      _value = _value.substring(0, 2);
     }
     _playSound(_value);
     _focusNode.requestFocus();
@@ -371,20 +381,22 @@ class _QueueScreenState extends State<QueueScreen> {
         if (mode == '1') {
           await _audioPlayer.play(AssetSource('sound/bell.mp3'));
         } else if (mode == '2') {
-          await _audioPlayer.play(AssetSource('sound/TH/pleasenumber.mp3'));
-          await Future.delayed(const Duration(milliseconds: 1200));
-          for (int i = 0; i < numberString.length; i++) {
-            await _audioPlayer
-                .play(AssetSource('sound/TH/${numberString[i]}.mp3'));
-            if (i + 1 < numberString.length &&
-                numberString[i] == numberString[i + 1]) {
-              await _audioPlayer.onPlayerStateChanged.firstWhere(
-                (state) => state == PlayerState.completed,
-              );
-            } else {
-              await Future.delayed(const Duration(milliseconds: 650));
-            }
-          }
+          // await _audioPlayer.play(AssetSource('sound/TH/pleasenumber.mp3'));
+          // await Future.delayed(const Duration(milliseconds: 1200));
+          // for (int i = 0; i < numberString.length; i++) {
+          //   await _audioPlayer
+          //       .play(AssetSource('sound/TH/${numberString[i]}.mp3'));
+          //   if (i + 1 < numberString.length &&
+          //       numberString[i] == numberString[i + 1]) {
+          //     await _audioPlayer.onPlayerStateChanged.firstWhere(
+          //       (state) => state == PlayerState.completed,
+          //     );
+          //   } else {
+          //     await Future.delayed(const Duration(milliseconds: 650));
+          //   }
+          // }
+          await _audioPlayer
+              .play(AssetSource('sound/TH/TH- ($numberString).mp3'));
         } else if (mode == '3') {
           await _audioPlayer.play(AssetSource('sound/EN/pleasenumber.mp3'));
           await Future.delayed(const Duration(milliseconds: 1200));
@@ -416,20 +428,22 @@ class _QueueScreenState extends State<QueueScreen> {
             }
           }
         } else if (mode == '5') {
-          await _audioPlayer.play(AssetSource('sound/TH/pleasenumber.mp3'));
-          await Future.delayed(const Duration(milliseconds: 1200));
-          for (int i = 0; i < numberString.length; i++) {
-            await _audioPlayer
-                .play(AssetSource('sound/TH/${numberString[i]}.mp3'));
-            if (i + 1 < numberString.length &&
-                numberString[i] == numberString[i + 1]) {
-              await _audioPlayer.onPlayerStateChanged.firstWhere(
-                (state) => state == PlayerState.completed,
-              );
-            } else {
-              await Future.delayed(const Duration(milliseconds: 650));
-            }
-          }
+          // await _audioPlayer.play(AssetSource('sound/TH/pleasenumber.mp3'));
+          // await Future.delayed(const Duration(milliseconds: 1200));
+          // for (int i = 0; i < numberString.length; i++) {
+          //   await _audioPlayer
+          //       .play(AssetSource('sound/TH/${numberString[i]}.mp3'));
+          //   if (i + 1 < numberString.length &&
+          //       numberString[i] == numberString[i + 1]) {
+          //     await _audioPlayer.onPlayerStateChanged.firstWhere(
+          //       (state) => state == PlayerState.completed,
+          //     );
+          //   } else {
+          //     await Future.delayed(const Duration(milliseconds: 650));
+          //   }
+          // }
+          await _audioPlayer
+              .play(AssetSource('sound/TH/TH- ($numberString).mp3'));
 
           await Future.delayed(const Duration(milliseconds: 100));
           await _audioPlayer.play(AssetSource('sound/EN/pleasenumber.mp3'));
@@ -447,20 +461,22 @@ class _QueueScreenState extends State<QueueScreen> {
             }
           }
         } else if (mode == '6') {
-          await _audioPlayer.play(AssetSource('sound/TH/pleasenumber.mp3'));
-          await Future.delayed(const Duration(milliseconds: 1200));
-          for (int i = 0; i < numberString.length; i++) {
-            await _audioPlayer
-                .play(AssetSource('sound/TH/${numberString[i]}.mp3'));
-            if (i + 1 < numberString.length &&
-                numberString[i] == numberString[i + 1]) {
-              await _audioPlayer.onPlayerStateChanged.firstWhere(
-                (state) => state == PlayerState.completed,
-              );
-            } else {
-              await Future.delayed(const Duration(milliseconds: 650));
-            }
-          }
+          // await _audioPlayer.play(AssetSource('sound/TH/pleasenumber.mp3'));
+          // await Future.delayed(const Duration(milliseconds: 1200));
+          // for (int i = 0; i < numberString.length; i++) {
+          //   await _audioPlayer
+          //       .play(AssetSource('sound/TH/${numberString[i]}.mp3'));
+          //   if (i + 1 < numberString.length &&
+          //       numberString[i] == numberString[i + 1]) {
+          //     await _audioPlayer.onPlayerStateChanged.firstWhere(
+          //       (state) => state == PlayerState.completed,
+          //     );
+          //   } else {
+          //     await Future.delayed(const Duration(milliseconds: 650));
+          //   }
+          // }
+          await _audioPlayer
+              .play(AssetSource('sound/TH/TH- ($numberString).mp3'));
 
           await Future.delayed(const Duration(milliseconds: 100));
           await _audioPlayer.play(AssetSource('sound/CN/pleasenumber.mp3'));
@@ -509,20 +525,22 @@ class _QueueScreenState extends State<QueueScreen> {
             }
           }
         } else if (mode == '8') {
-          await _audioPlayer.play(AssetSource('sound/TH/pleasenumber.mp3'));
-          await Future.delayed(const Duration(milliseconds: 1200));
-          for (int i = 0; i < numberString.length; i++) {
-            await _audioPlayer
-                .play(AssetSource('sound/TH/${numberString[i]}.mp3'));
-            if (i + 1 < numberString.length &&
-                numberString[i] == numberString[i + 1]) {
-              await _audioPlayer.onPlayerStateChanged.firstWhere(
-                (state) => state == PlayerState.completed,
-              );
-            } else {
-              await Future.delayed(const Duration(milliseconds: 650));
-            }
-          }
+          // await _audioPlayer.play(AssetSource('sound/TH/pleasenumber.mp3'));
+          // await Future.delayed(const Duration(milliseconds: 1200));
+          // for (int i = 0; i < numberString.length; i++) {
+          //   await _audioPlayer
+          //       .play(AssetSource('sound/TH/${numberString[i]}.mp3'));
+          //   if (i + 1 < numberString.length &&
+          //       numberString[i] == numberString[i + 1]) {
+          //     await _audioPlayer.onPlayerStateChanged.firstWhere(
+          //       (state) => state == PlayerState.completed,
+          //     );
+          //   } else {
+          //     await Future.delayed(const Duration(milliseconds: 650));
+          //   }
+          // }
+          await _audioPlayer
+              .play(AssetSource('sound/TH/TH- ($numberString).mp3'));
 
           await Future.delayed(const Duration(milliseconds: 100));
           await _audioPlayer.play(AssetSource('sound/EN/pleasenumber.mp3'));
@@ -714,9 +732,9 @@ class _QueueScreenState extends State<QueueScreen> {
                   mainAxisAlignment: MainAxisAlignment.start,
                   crossAxisAlignment: CrossAxisAlignment.center,
                   children: [
-                    const SizedBox(
-                      height: 20,
-                    ),
+                    // const SizedBox(
+                    //   height: 20,
+                    // ),
                     Stack(
                       children: [
                         Opacity(
@@ -745,8 +763,7 @@ class _QueueScreenState extends State<QueueScreen> {
                         ),
                         Padding(
                           padding: EdgeInsets.only(
-                            left: screenSize.width *
-                                0.10, // ปรับค่าให้เหมาะสมกับความต้องการ
+                            left: screenSize.width * 0.05,
                           ),
                           child: Align(
                             alignment: Alignment.center, // ชิดซ้าย
@@ -804,13 +821,13 @@ class _QueueScreenState extends State<QueueScreen> {
                         child: FittedBox(
                           fit: BoxFit.none,
                           child: Text(
-                            _value.substring(0, 3),
+                            _value.substring(0, 2),
                             style: TextStyle(
                               color: _textColor,
                               fontWeight: FontWeight.bold,
                               fontFamily: 'DIGITAL',
                               letterSpacing: _value.contains('1') ? 50.0 : 10.0,
-                              fontSize: screenSize.width * 0.23,
+                              fontSize: screenSize.width * 0.3,
                             ),
                             textAlign: TextAlign.center,
                             overflow: TextOverflow.ellipsis,
@@ -823,6 +840,41 @@ class _QueueScreenState extends State<QueueScreen> {
                 ),
               ),
             ),
+            // Expanded(
+            //   flex: 3,
+            //   child: PageView.builder(
+            //     controller: _pageController,
+            //     itemCount: imageList.length,
+            //     itemBuilder: (context, index) {
+            //       final file = imageList[index];
+            //       final isVideo = isVideoList[index];
+
+            //       if (isVideo) {
+            //         return Container(
+            //           color: Colors.black,
+            //           child: VideoPlayerWidget(
+            //             file: file,
+            //             onVideoFinished: (finished) {
+            //               setState(() {
+            //                 _videoStatuses[index] = finished;
+            //               });
+            //             },
+            //           ),
+            //         );
+            //       } else {
+            //         return Container(
+            //           color: Colors.black,
+            //           child: FittedBox(
+            //             fit: BoxFit.fitWidth,
+            //             child: Image.file(
+            //               file,
+            //             ),
+            //           ),
+            //         );
+            //       }
+            //     },
+            //   ),
+            // ),
             Expanded(
               flex: 3,
               child: PageView.builder(
@@ -831,12 +883,14 @@ class _QueueScreenState extends State<QueueScreen> {
                 itemBuilder: (context, index) {
                   final file = imageList[index];
                   final isVideo = isVideoList[index];
+                  final isLastVideo = isVideo && index == imageList.length - 1;
 
                   if (isVideo) {
                     return Container(
                       color: Colors.black,
                       child: VideoPlayerWidget(
                         file: file,
+                        isLastVideo: isLastVideo, // ส่งค่าตัวสุดท้าย
                         onVideoFinished: (finished) {
                           setState(() {
                             _videoStatuses[index] = finished;
@@ -865,12 +919,64 @@ class _QueueScreenState extends State<QueueScreen> {
   }
 }
 
+// class VideoPlayerWidget extends StatefulWidget {
+//   final File file;
+//   final ValueChanged<bool>
+//       onVideoFinished; // Callback to notify when video is finished
+
+//   VideoPlayerWidget({required this.file, required this.onVideoFinished});
+
+//   @override
+//   _VideoPlayerWidgetState createState() => _VideoPlayerWidgetState();
+// }
+
+// class _VideoPlayerWidgetState extends State<VideoPlayerWidget> {
+//   late VideoPlayerController _controller;
+
+//   @override
+//   void initState() {
+//     super.initState();
+//     _controller = VideoPlayerController.file(widget.file)
+//       ..setVolume(0.0)
+//       ..setLooping(true)
+//       ..initialize().then((_) {
+//         setState(() {});
+//         _controller.play();
+//         _controller.addListener(() {
+//           if (_controller.value.position == _controller.value.duration) {
+//             widget.onVideoFinished(true);
+//           }
+//         });
+//       });
+//   }
+
+//   @override
+//   Widget build(BuildContext context) {
+//     return _controller.value.isInitialized
+//         ? AspectRatio(
+//             aspectRatio: _controller.value.aspectRatio,
+//             child: VideoPlayer(_controller),
+//           )
+//         : Center(child: CircularProgressIndicator());
+//   }
+
+//   @override
+//   void dispose() {
+//     _controller.dispose();
+//     super.dispose();
+//   }
+// }
+
 class VideoPlayerWidget extends StatefulWidget {
   final File file;
-  final ValueChanged<bool>
-      onVideoFinished; // Callback to notify when video is finished
+  final ValueChanged<bool> onVideoFinished;
+  final bool isLastVideo; // เพิ่มตัวบอกว่าวิดีโอนี้เป็นตัวสุดท้ายหรือไม่
 
-  VideoPlayerWidget({required this.file, required this.onVideoFinished});
+  VideoPlayerWidget({
+    required this.file,
+    required this.onVideoFinished,
+    required this.isLastVideo, // รับค่าจากภายนอก
+  });
 
   @override
   _VideoPlayerWidgetState createState() => _VideoPlayerWidgetState();
@@ -884,7 +990,7 @@ class _VideoPlayerWidgetState extends State<VideoPlayerWidget> {
     super.initState();
     _controller = VideoPlayerController.file(widget.file)
       ..setVolume(0.0)
-      ..setLooping(true)
+      ..setLooping(!widget.isLastVideo) // วนซ้ำเฉพาะวิดีโอที่ไม่ใช่ตัวสุดท้าย
       ..initialize().then((_) {
         setState(() {});
         _controller.play();
