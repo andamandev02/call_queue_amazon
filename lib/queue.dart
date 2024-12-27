@@ -82,16 +82,25 @@ class _QueueScreenState extends State<QueueScreen> {
       return;
     }
     if (value == '-') {
-      setState(() {
-        _isFieldEnabled = false;
-      });
-      if (_value == '000' || _value == '00' || _value == '0') {
-        _focusNode.requestFocus();
-        _textController.clear();
+      if (_value == '000' ||
+          _value == '00' ||
+          _value == '0' ||
+          _value == 0 ||
+          _value == 00 ||
+          _value == 000 ||
+          _value == '') {
+        WidgetsBinding.instance.addPostFrameCallback((_) {
+          if (_isFieldEnabled) {
+            _focusNode.requestFocus(); // ทำให้ TextField โฟกัส
+            _textController.clear(); // ลบข้อความใน TextFiel
+          }
+        });
       } else {
         int currentValue = int.parse(_value);
         _value = (currentValue).toString().padLeft(2, '0');
         _playSound(_value);
+        _focusNode.requestFocus(); // โฟกัสกลับ
+        _textController.clear(); // ล้างค่าของ TextField
       }
     } else if (value == '+') {
       setState(() {
@@ -186,8 +195,9 @@ class _QueueScreenState extends State<QueueScreen> {
         // '${externalDir.parent.parent.parent.parent.parent.parent.path}/2627-6E53/images';
         // '/storage/1474-1882/logo';
         // '/storage/22A1-A3D7/logo';
+        // '/mnt/usb/0500-5AD3/logo';
         '/storage/3BCD-E5B2/logo';
-    // '/mnt/usb/0500-5AD3/logo';
+        // '/storage/1010-D012/logo';
     if (usbPath == null) {
       throw 'USB path is null';
     }
@@ -238,6 +248,7 @@ class _QueueScreenState extends State<QueueScreen> {
     }
     // String usbPath = '/mnt/usb/0500-5AD3/images';
     String usbPath = '/storage/3BCD-E5B2/images';
+    // String usbPath = '/storage/1010-D012/images';
 
     if (usbPath.isEmpty) {
       throw 'USB path is null';
@@ -356,12 +367,21 @@ class _QueueScreenState extends State<QueueScreen> {
   void _playSound(String value) async {
     Future.microtask(() async {
       try {
+        print(value);
+
+        String okValue = '';
         var box = await Hive.openBox('ModeSounds');
         var values = box.values.toList();
         var mode = box.values.first;
-        final trimmedString = value.toString();
+        if (value.length >= 3) {
+          okValue = value.substring(0, 2);
+        } else {
+          okValue = value.toString();
+        }
+        final trimmedString = okValue.toString();
         final numberString = trimmedString.replaceAll(RegExp('^0+'), '');
 
+        print(numberString);
         _audioPlayer.setAudioContext(AudioContext(
           android: const AudioContextAndroid(
             isSpeakerphoneOn: false, // ไม่บังคับใช้ลำโพง
@@ -377,206 +397,262 @@ class _QueueScreenState extends State<QueueScreen> {
         ));
 
         _startBlinking();
+        try {
+          if (mode == '1') {
+            await _audioPlayer.play(AssetSource('sound/bell.mp3'));
+          } else if (mode == '2') {
+            // await _audioPlayer.play(AssetSource('sound/TH/pleasenumber.mp3'));
+            // await Future.delayed(const Duration(milliseconds: 1200));
+            // for (int i = 0; i < numberString.length; i++) {
+            //   await _audioPlayer
+            //       .play(AssetSource('sound/TH/${numberString[i]}.mp3'));
+            //   if (i + 1 < numberString.length &&
+            //       numberString[i] == numberString[i + 1]) {
+            //     await _audioPlayer.onPlayerStateChanged.firstWhere(
+            //       (state) => state == PlayerState.completed,
+            //     );
+            //   } else {
+            //     await Future.delayed(const Duration(milliseconds: 650));
+            //   }
+            // }
+            await _audioPlayer
+                .play(AssetSource('sound/TH/TH- ($numberString).mp3'));
+          } else if (mode == '3') {
+            await _audioPlayer.play(AssetSource('sound/EN/pleasenumber.mp3'));
+            // await Future.delayed(const Duration(milliseconds: 1200));
+            await _audioPlayer.onPlayerStateChanged.firstWhere(
+              (state) => state == PlayerState.completed,
+            );
+            for (int i = 0; i < numberString.length; i++) {
+              await _audioPlayer
+                  .play(AssetSource('sound/EN/${numberString[i]}.mp3'));
+              if (i + 1 < numberString.length &&
+                  numberString[i] == numberString[i + 1]) {
+                await _audioPlayer.onPlayerStateChanged.firstWhere(
+                  (state) => state == PlayerState.completed,
+                );
+              } else {
+                await Future.delayed(const Duration(milliseconds: 650));
+              }
+            }
+          } else if (mode == '4') {
+            await _audioPlayer.play(AssetSource('sound/CN/pleasenumber.mp3'));
+            // await Future.delayed(const Duration(milliseconds: 1200));
+            await _audioPlayer.onPlayerStateChanged.firstWhere(
+              (state) => state == PlayerState.completed,
+            );
+            for (int i = 0; i < numberString.length; i++) {
+              await _audioPlayer
+                  .play(AssetSource('sound/CN/${numberString[i]}.mp3'));
+              if (i + 1 < numberString.length &&
+                  numberString[i] == numberString[i + 1]) {
+                await _audioPlayer.onPlayerStateChanged.firstWhere(
+                  (state) => state == PlayerState.completed,
+                );
+              } else {
+                await Future.delayed(const Duration(milliseconds: 650));
+              }
+            }
+          } else if (mode == '5') {
+            // await _audioPlayer.play(AssetSource('sound/TH/pleasenumber.mp3'));
+            // await Future.delayed(const Duration(milliseconds: 1200));
+            // for (int i = 0; i < numberString.length; i++) {
+            //   await _audioPlayer
+            //       .play(AssetSource('sound/TH/${numberString[i]}.mp3'));
+            //   if (i + 1 < numberString.length &&
+            //       numberString[i] == numberString[i + 1]) {
+            //     await _audioPlayer.onPlayerStateChanged.firstWhere(
+            //       (state) => state == PlayerState.completed,
+            //     );
+            //   } else {
+            //     await Future.delayed(const Duration(milliseconds: 650));
+            //   }
+            // }
+            await _audioPlayer
+                .play(AssetSource('sound/TH/TH- ($numberString).mp3'));
+            await _audioPlayer.onPlayerStateChanged.firstWhere(
+              (state) => state == PlayerState.completed,
+            );
+            // await Future.delayed(const Duration(milliseconds: 100));
+            await _audioPlayer.play(AssetSource('sound/EN/pleasenumber.mp3'));
+            await _audioPlayer.onPlayerStateChanged.firstWhere(
+              (state) => state == PlayerState.completed,
+            );
+            // await Future.delayed(const Duration(milliseconds: 1200));
+            for (int i = 0; i < numberString.length; i++) {
+              await _audioPlayer
+                  .play(AssetSource('sound/EN/${numberString[i]}.mp3'));
+              if (i + 1 < numberString.length &&
+                  numberString[i] == numberString[i + 1]) {
+                await _audioPlayer.onPlayerStateChanged.firstWhere(
+                  (state) => state == PlayerState.completed,
+                );
+              } else {
+                await Future.delayed(const Duration(milliseconds: 650));
+              }
+            }
+          } else if (mode == '6') {
+            // await _audioPlayer.play(AssetSource('sound/TH/pleasenumber.mp3'));
+            // await Future.delayed(const Duration(milliseconds: 1200));
+            // for (int i = 0; i < numberString.length; i++) {
+            //   await _audioPlayer
+            //       .play(AssetSource('sound/TH/${numberString[i]}.mp3'));
+            //   if (i + 1 < numberString.length &&
+            //       numberString[i] == numberString[i + 1]) {
+            //     await _audioPlayer.onPlayerStateChanged.firstWhere(
+            //       (state) => state == PlayerState.completed,
+            //     );
+            //   } else {
+            //     await Future.delayed(const Duration(milliseconds: 650));
+            //   }
+            // }
+            await _audioPlayer
+                .play(AssetSource('sound/TH/TH- ($numberString).mp3'));
+            await _audioPlayer.onPlayerStateChanged.firstWhere(
+              (state) => state == PlayerState.completed,
+            );
+            // await Future.delayed(const Duration(milliseconds: 100));
+            await _audioPlayer.play(AssetSource('sound/CN/pleasenumber.mp3'));
+            // await Future.delayed(const Duration(milliseconds: 1200));
+            await _audioPlayer.onPlayerStateChanged.firstWhere(
+              (state) => state == PlayerState.completed,
+            );
+            for (int i = 0; i < numberString.length; i++) {
+              await _audioPlayer
+                  .play(AssetSource('sound/CN/${numberString[i]}.mp3'));
+              if (i + 1 < numberString.length &&
+                  numberString[i] == numberString[i + 1]) {
+                await _audioPlayer.onPlayerStateChanged.firstWhere(
+                  (state) => state == PlayerState.completed,
+                );
+              } else {
+                await Future.delayed(const Duration(milliseconds: 650));
+              }
+            }
+          } else if (mode == '7') {
+            await _audioPlayer.play(AssetSource('sound/EN/pleasenumber.mp3'));
+            // await Future.delayed(const Duration(milliseconds: 1200));
+            await _audioPlayer.onPlayerStateChanged.firstWhere(
+              (state) => state == PlayerState.completed,
+            );
+            for (int i = 0; i < numberString.length; i++) {
+              await _audioPlayer
+                  .play(AssetSource('sound/EN/${numberString[i]}.mp3'));
+              if (i + 1 < numberString.length &&
+                  numberString[i] == numberString[i + 1]) {
+                await _audioPlayer.onPlayerStateChanged.firstWhere(
+                  (state) => state == PlayerState.completed,
+                );
+              } else {
+                await Future.delayed(const Duration(milliseconds: 650));
+              }
+            }
 
-        if (mode == '1') {
-          await _audioPlayer.play(AssetSource('sound/bell.mp3'));
-        } else if (mode == '2') {
-          // await _audioPlayer.play(AssetSource('sound/TH/pleasenumber.mp3'));
-          // await Future.delayed(const Duration(milliseconds: 1200));
-          // for (int i = 0; i < numberString.length; i++) {
-          //   await _audioPlayer
-          //       .play(AssetSource('sound/TH/${numberString[i]}.mp3'));
-          //   if (i + 1 < numberString.length &&
-          //       numberString[i] == numberString[i + 1]) {
-          //     await _audioPlayer.onPlayerStateChanged.firstWhere(
-          //       (state) => state == PlayerState.completed,
+            // await Future.delayed(const Duration(milliseconds: 100));
+            await _audioPlayer.onPlayerStateChanged.firstWhere(
+              (state) => state == PlayerState.completed,
+            );
+            await _audioPlayer.play(AssetSource('sound/CN/pleasenumber.mp3'));
+            // await Future.delayed(const Duration(milliseconds: 1200));
+            await _audioPlayer.onPlayerStateChanged.firstWhere(
+              (state) => state == PlayerState.completed,
+            );
+            for (int i = 0; i < numberString.length; i++) {
+              await _audioPlayer
+                  .play(AssetSource('sound/CN/${numberString[i]}.mp3'));
+              if (i + 1 < numberString.length &&
+                  numberString[i] == numberString[i + 1]) {
+                await _audioPlayer.onPlayerStateChanged.firstWhere(
+                  (state) => state == PlayerState.completed,
+                );
+              } else {
+                await Future.delayed(const Duration(milliseconds: 650));
+              }
+            }
+          } else if (mode == '8') {
+            await _audioPlayer
+                .play(AssetSource('sound/TH/TH- ($numberString).mp3'));
+            await _audioPlayer.onPlayerStateChanged.firstWhere(
+              (state) => state == PlayerState.completed,
+            );
+            await _audioPlayer.play(AssetSource('sound/EN/pleasenumber.mp3'));
+            await _audioPlayer.onPlayerStateChanged.firstWhere(
+              (state) => state == PlayerState.completed,
+            );
+            for (int i = 0; i < numberString.length; i++) {
+              await _audioPlayer
+                  .play(AssetSource('sound/EN/${numberString[i]}.mp3'));
+              if (i + 1 < numberString.length &&
+                  numberString[i] == numberString[i + 1]) {
+                await _audioPlayer.onPlayerStateChanged.firstWhere(
+                  (state) => state == PlayerState.completed,
+                );
+              } else {
+                await Future.delayed(const Duration(milliseconds: 650));
+              }
+            }
+
+            await _audioPlayer.onPlayerStateChanged.firstWhere(
+              (state) => state == PlayerState.completed,
+            );
+            await _audioPlayer.play(AssetSource('sound/CN/pleasenumber.mp3'));
+            await _audioPlayer.onPlayerStateChanged.firstWhere(
+              (state) => state == PlayerState.completed,
+            );
+            for (int i = 0; i < numberString.length; i++) {
+              await _audioPlayer
+                  .play(AssetSource('sound/CN/${numberString[i]}.mp3'));
+              if (i + 1 < numberString.length &&
+                  numberString[i] == numberString[i + 1]) {
+                await _audioPlayer.onPlayerStateChanged.firstWhere(
+                  (state) => state == PlayerState.completed,
+                );
+              } else {
+                await Future.delayed(const Duration(milliseconds: 650));
+              }
+            }
+          } else {
+            await _audioPlayer.play(AssetSource('sound/bell.mp3'));
+          }
+
+          setState(() {
+            _isFieldEnabled = true;
+          });
+          WidgetsBinding.instance.addPostFrameCallback((_) {
+            if (_isFieldEnabled) {
+              _focusNode.requestFocus(); // ทำให้ TextField โฟกัส
+              _textController.clear(); // ลบข้อความใน TextFiel
+            }
+          });
+        } catch (e) {
+          setState(() {
+            _isFieldEnabled = true;
+          });
+          WidgetsBinding.instance.addPostFrameCallback((_) {
+            if (_isFieldEnabled) {
+              _focusNode.requestFocus(); // ทำให้ TextField โฟกัส
+              _textController.clear(); // ลบข้อความใน TextFiel
+            }
+          });
+          // showDialog(
+          //   context: context,
+          //   builder: (BuildContext context) {
+          //     return AlertDialog(
+          //       title: Text('Error'),
+          //       content: Text('Error opening Hive box: $e'),
+          //       actions: [
+          //         TextButton(
+          //           onPressed: () {
+          //             Navigator.of(context).pop();
+          //           },
+          //           child: Text('OK'),
+          //         ),
+          //       ],
           //     );
-          //   } else {
-          //     await Future.delayed(const Duration(milliseconds: 650));
-          //   }
-          // }
-          await _audioPlayer
-              .play(AssetSource('sound/TH/TH- ($numberString).mp3'));
-        } else if (mode == '3') {
-          await _audioPlayer.play(AssetSource('sound/EN/pleasenumber.mp3'));
-          await Future.delayed(const Duration(milliseconds: 1200));
-          for (int i = 0; i < numberString.length; i++) {
-            await _audioPlayer
-                .play(AssetSource('sound/EN/${numberString[i]}.mp3'));
-            if (i + 1 < numberString.length &&
-                numberString[i] == numberString[i + 1]) {
-              await _audioPlayer.onPlayerStateChanged.firstWhere(
-                (state) => state == PlayerState.completed,
-              );
-            } else {
-              await Future.delayed(const Duration(milliseconds: 650));
-            }
-          }
-        } else if (mode == '4') {
-          await _audioPlayer.play(AssetSource('sound/CN/pleasenumber.mp3'));
-          await Future.delayed(const Duration(milliseconds: 1200));
-          for (int i = 0; i < numberString.length; i++) {
-            await _audioPlayer
-                .play(AssetSource('sound/CN/${numberString[i]}.mp3'));
-            if (i + 1 < numberString.length &&
-                numberString[i] == numberString[i + 1]) {
-              await _audioPlayer.onPlayerStateChanged.firstWhere(
-                (state) => state == PlayerState.completed,
-              );
-            } else {
-              await Future.delayed(const Duration(milliseconds: 650));
-            }
-          }
-        } else if (mode == '5') {
-          // await _audioPlayer.play(AssetSource('sound/TH/pleasenumber.mp3'));
-          // await Future.delayed(const Duration(milliseconds: 1200));
-          // for (int i = 0; i < numberString.length; i++) {
-          //   await _audioPlayer
-          //       .play(AssetSource('sound/TH/${numberString[i]}.mp3'));
-          //   if (i + 1 < numberString.length &&
-          //       numberString[i] == numberString[i + 1]) {
-          //     await _audioPlayer.onPlayerStateChanged.firstWhere(
-          //       (state) => state == PlayerState.completed,
-          //     );
-          //   } else {
-          //     await Future.delayed(const Duration(milliseconds: 650));
-          //   }
-          // }
-          await _audioPlayer
-              .play(AssetSource('sound/TH/TH- ($numberString).mp3'));
-
-          await Future.delayed(const Duration(milliseconds: 100));
-          await _audioPlayer.play(AssetSource('sound/EN/pleasenumber.mp3'));
-          await Future.delayed(const Duration(milliseconds: 1200));
-          for (int i = 0; i < numberString.length; i++) {
-            await _audioPlayer
-                .play(AssetSource('sound/EN/${numberString[i]}.mp3'));
-            if (i + 1 < numberString.length &&
-                numberString[i] == numberString[i + 1]) {
-              await _audioPlayer.onPlayerStateChanged.firstWhere(
-                (state) => state == PlayerState.completed,
-              );
-            } else {
-              await Future.delayed(const Duration(milliseconds: 650));
-            }
-          }
-        } else if (mode == '6') {
-          // await _audioPlayer.play(AssetSource('sound/TH/pleasenumber.mp3'));
-          // await Future.delayed(const Duration(milliseconds: 1200));
-          // for (int i = 0; i < numberString.length; i++) {
-          //   await _audioPlayer
-          //       .play(AssetSource('sound/TH/${numberString[i]}.mp3'));
-          //   if (i + 1 < numberString.length &&
-          //       numberString[i] == numberString[i + 1]) {
-          //     await _audioPlayer.onPlayerStateChanged.firstWhere(
-          //       (state) => state == PlayerState.completed,
-          //     );
-          //   } else {
-          //     await Future.delayed(const Duration(milliseconds: 650));
-          //   }
-          // }
-          await _audioPlayer
-              .play(AssetSource('sound/TH/TH- ($numberString).mp3'));
-
-          await Future.delayed(const Duration(milliseconds: 100));
-          await _audioPlayer.play(AssetSource('sound/CN/pleasenumber.mp3'));
-          await Future.delayed(const Duration(milliseconds: 1200));
-          for (int i = 0; i < numberString.length; i++) {
-            await _audioPlayer
-                .play(AssetSource('sound/CN/${numberString[i]}.mp3'));
-            if (i + 1 < numberString.length &&
-                numberString[i] == numberString[i + 1]) {
-              await _audioPlayer.onPlayerStateChanged.firstWhere(
-                (state) => state == PlayerState.completed,
-              );
-            } else {
-              await Future.delayed(const Duration(milliseconds: 650));
-            }
-          }
-        } else if (mode == '7') {
-          await _audioPlayer.play(AssetSource('sound/EN/pleasenumber.mp3'));
-          await Future.delayed(const Duration(milliseconds: 1200));
-          for (int i = 0; i < numberString.length; i++) {
-            await _audioPlayer
-                .play(AssetSource('sound/EN/${numberString[i]}.mp3'));
-            if (i + 1 < numberString.length &&
-                numberString[i] == numberString[i + 1]) {
-              await _audioPlayer.onPlayerStateChanged.firstWhere(
-                (state) => state == PlayerState.completed,
-              );
-            } else {
-              await Future.delayed(const Duration(milliseconds: 650));
-            }
-          }
-
-          await Future.delayed(const Duration(milliseconds: 100));
-          await _audioPlayer.play(AssetSource('sound/CN/pleasenumber.mp3'));
-          await Future.delayed(const Duration(milliseconds: 1200));
-          for (int i = 0; i < numberString.length; i++) {
-            await _audioPlayer
-                .play(AssetSource('sound/CN/${numberString[i]}.mp3'));
-            if (i + 1 < numberString.length &&
-                numberString[i] == numberString[i + 1]) {
-              await _audioPlayer.onPlayerStateChanged.firstWhere(
-                (state) => state == PlayerState.completed,
-              );
-            } else {
-              await Future.delayed(const Duration(milliseconds: 650));
-            }
-          }
-        } else if (mode == '8') {
-          // await _audioPlayer.play(AssetSource('sound/TH/pleasenumber.mp3'));
-          // await Future.delayed(const Duration(milliseconds: 1200));
-          // for (int i = 0; i < numberString.length; i++) {
-          //   await _audioPlayer
-          //       .play(AssetSource('sound/TH/${numberString[i]}.mp3'));
-          //   if (i + 1 < numberString.length &&
-          //       numberString[i] == numberString[i + 1]) {
-          //     await _audioPlayer.onPlayerStateChanged.firstWhere(
-          //       (state) => state == PlayerState.completed,
-          //     );
-          //   } else {
-          //     await Future.delayed(const Duration(milliseconds: 650));
-          //   }
-          // }
-          await _audioPlayer
-              .play(AssetSource('sound/TH/TH- ($numberString).mp3'));
-
-          await Future.delayed(const Duration(milliseconds: 100));
-          await _audioPlayer.play(AssetSource('sound/EN/pleasenumber.mp3'));
-          await Future.delayed(const Duration(milliseconds: 1200));
-          for (int i = 0; i < numberString.length; i++) {
-            await _audioPlayer
-                .play(AssetSource('sound/EN/${numberString[i]}.mp3'));
-            if (i + 1 < numberString.length &&
-                numberString[i] == numberString[i + 1]) {
-              await _audioPlayer.onPlayerStateChanged.firstWhere(
-                (state) => state == PlayerState.completed,
-              );
-            } else {
-              await Future.delayed(const Duration(milliseconds: 650));
-            }
-          }
-
-          await Future.delayed(const Duration(milliseconds: 100));
-          await _audioPlayer.play(AssetSource('sound/CN/pleasenumber.mp3'));
-          await Future.delayed(const Duration(milliseconds: 1200));
-          for (int i = 0; i < numberString.length; i++) {
-            await _audioPlayer
-                .play(AssetSource('sound/CN/${numberString[i]}.mp3'));
-            if (i + 1 < numberString.length &&
-                numberString[i] == numberString[i + 1]) {
-              await _audioPlayer.onPlayerStateChanged.firstWhere(
-                (state) => state == PlayerState.completed,
-              );
-            } else {
-              await Future.delayed(const Duration(milliseconds: 650));
-            }
-          }
-        } else {
-          await _audioPlayer.play(AssetSource('sound/bell.mp3'));
+          //   },
+          // );
         }
-
+      } catch (e) {
         setState(() {
           _isFieldEnabled = true;
         });
@@ -586,25 +662,23 @@ class _QueueScreenState extends State<QueueScreen> {
             _textController.clear(); // ลบข้อความใน TextFiel
           }
         });
-      } catch (e) {
-        print("Error opening Hive box: $e");
-        showDialog(
-          context: context,
-          builder: (BuildContext context) {
-            return AlertDialog(
-              title: Text('Error'),
-              content: Text('Error opening Hive box: $e'),
-              actions: [
-                TextButton(
-                  onPressed: () {
-                    Navigator.of(context).pop();
-                  },
-                  child: Text('OK'),
-                ),
-              ],
-            );
-          },
-        );
+        // showDialog(
+        //   context: context,
+        //   builder: (BuildContext context) {
+        //     return AlertDialog(
+        //       title: Text('Error'),
+        //       content: Text('Error opening Hive box: $e'),
+        //       actions: [
+        //         TextButton(
+        //           onPressed: () {
+        //             Navigator.of(context).pop();
+        //           },
+        //           child: Text('OK'),
+        //         ),
+        //       ],
+        //     );
+        //   },
+        // );
       } finally {
         _timer?.cancel();
         _isFieldEnabled = true;
